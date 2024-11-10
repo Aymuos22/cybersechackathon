@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iQSpider Login</title>
+    <style>
+        /* Basic Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #53d4f9, #8ed6f7);
+        }
+        .container {
+            width: 800px;
+            height: 450px;
+            display: flex;
+            background-color: #e6f5fa;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        .left, .right {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .left h2 { font-size: 24px; margin-bottom: 5px; color: #0078D7; }
+        .left p { font-size: 14px; color: #555; margin-bottom: 20px; }
+        .input-container {
+            width: 100%;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            background-color: #f2f9ff;
+            border: 1px solid #d0e4f1;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .input-container input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: none;
+            font-size: 14px;
+            color: #333;
+        }
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #53d4f9;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .login-button:hover { background-color: #3bbce6; }
+        .right h3 { font-size: 20px; margin-top: 20px; color: #0078D7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <h2>iQSpider</h2>
+            <p>Come, Experience Peaceful Business</p>
+            <h3>Login</h3>
+            <form id="loginForm">
+                <div class="input-container">
+                    <input type="text" id="email" placeholder="arun@gmail.com" required />
+                </div>
+                <div class="input-container">
+                    <input type="password" id="password" placeholder="Password" required />
+                </div>
+                <button type="submit" class="login-button">Login</button>
+            </form>
+        </div>
+        <div class="right">
+            <h3>Inventory Management, Asset Management, and Visitor Management</h3>
+        </div>
+    </div>
+
+    <!-- Import CryptoJS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script type="module">
+        import Encryptor from './encryptor.js';
+
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            // Initialize the Encryptor with the secret key (received securely from the server)
+            const secretKey = 'YOUR_SECRET_KEY_1234567890123456';  // Replace with the actual key
+            const encryptor = new Encryptor(secretKey);
+
+            // Encrypt the email and password
+            const encryptedEmail = encryptor.encryptText(email);
+            const encryptedPassword = encryptor.encryptText(password);
+
+            // Send encrypted data to the server
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: encryptedEmail,
+                    password: encryptedPassword
+                })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Login successful');
+            } else {
+                alert('Login failed');
+            }
+        });
+    </script>
+</body>
+</html>
